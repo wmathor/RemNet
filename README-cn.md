@@ -15,17 +15,14 @@
   </a>
 </p>
 
-[中文](https://github.com/wmathor/RemNet/blob/master/README-cn.md) | [English](https://github.com/wmathor/RemNet)
+[中文](https://github.com/mathors/2019-nCoV/blob/master/README-cn.md) | [English](https://github.com/mathors/2019-nCoV)
 
-RemNet is an open source deep learning framework based on C++. It is very easy to use, you only need to define the network structure and set the relevant parameters can start training
+RemNet是基于C++编写的开源深度学习框架。它非常容易上手使用，只需要您定义好网络结构并设定相关参数即可开始训练。
 
-RemNet is written in a similar way to Caffee in that its basic data types include Cube and Blob. In RemNet, the relationship between them is shown below
+RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube和Blob。在RemNet中，它们之间的关系如下图
 
 ![](https://s2.ax1x.com/2020/02/16/3pfBng.png)
 
-Here is a simple network diagram to help you understand the Net, Layer, and Blob relationships in the source code
+下面是一个简单的网络结构示意图，帮助您理解源代码中的Net、Layer、Blob的关系
 
 ![](https://s2.ax1x.com/2020/02/16/39V9dU.png)
-
-
-

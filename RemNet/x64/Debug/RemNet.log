@@ -1,0 +1,11 @@
+﻿  main.cpp
+  myBlob.cpp
+  myLayer.cpp
+F:\RemNet\RemNet\myLayer.cpp(21,10): warning C4244: “初始化”: 从“const arma::uword”转换到“int”，可能丢失数据
+  myNet.cpp
+F:\RemNet\RemNet\myNet.cpp(162,23): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  正在生成代码...
+lib_json.lib(json_reader.obj) : warning LNK4099: 未找到 PDB“lib_json.pdb”(使用“lib_json.lib(json_reader.obj)”或在“F:\RemNet\x64\Debug\lib_json.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+lib_json.lib(json_value.obj) : warning LNK4099: 未找到 PDB“lib_json.pdb”(使用“lib_json.lib(json_value.obj)”或在“F:\RemNet\x64\Debug\lib_json.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+lib_json.lib(json_writer.obj) : warning LNK4099: 未找到 PDB“lib_json.pdb”(使用“lib_json.lib(json_writer.obj)”或在“F:\RemNet\x64\Debug\lib_json.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  RemNet.vcxproj -> F:\RemNet\x64\Debug\RemNet.exe

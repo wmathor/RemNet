@@ -1,0 +1,72 @@
+// 网络配置
+{
+    "train":{
+        // 初始学习率
+        "learning rate":0.05,
+        
+        // 学习率衰减
+        "lr decay":0.99,
+        
+        // 更新策略 sgd/momentum/rmsprop/adagrad
+        "update method":"momentum",
+        "momentum parameter":0.95,
+        
+        "epochs":2,
+        // 是否使用mini-batch梯度下降算法做优化
+        "use batch":true,
+        
+        "batch size":32,
+        
+        // 迭代多少次后进行一次测试
+        "acc frequence":1,
+        
+        // 是否更新学习率
+        "frequence update":true,
+        
+        // 是否需要保存模型
+        "snapshot":false,
+        // 每隔几个迭代周期保存一次模型
+        "snapshot interval":10,
+        
+        // 是否以fine_tune方式训练
+        "fine tune":false,
+        
+        // 预训练模型所在路径
+        "pre trained model":"./iter20.gordonmodel"
+    },
+
+  "net": [
+    {
+      "name": "conv1", // 层名
+      "type": "Conv", // 层类型
+      "kernel num": 10, // 卷积核个数
+      "kernel height": 3, // 卷积核高
+      "kernel width": 3, // 卷积核宽
+      "pad": 1, // 填充数
+      "stride": 1 // 滑动步长
+    },
+
+    {
+      "name": "relu1", // 层名
+      "type": "ReLU" // 层类型
+    },
+
+    {
+      "name": "pool1", // 层名
+      "type": "Pool", // 层类型
+      "kernel height": 2, // 池化核高
+      "kernel width": 2, // 池化核宽
+      "stride": 1 // 滑动步长
+    },
+
+    {
+      "name": "fc1", // 层名
+      "type": "FC", // 层类型
+      "kernel num": 10 // 神经元个数
+    },
+    {
+      "name": "softmax", // 层名
+      "type": "Softmax" // 层类型
+    }
+  ]
+}

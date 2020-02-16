@@ -19,6 +19,18 @@
 
 RemNet是基于C++编写的开源深度学习框架。它非常容易上手使用，只需要您定义好网络结构并设定相关参数即可开始训练。
 
+## 下载
+
+```shell
+$ git clone https://github.com/wmathor/RemNet.git
+```
+
+clone到本地之后，请使用visual studio导入该项目，然后运行即可，非常简单。您也可以尝试修改`myModel.json`中的信息，例如添加其它一些层，然后再重新运行。
+
+对了，一开始您不需要准备什么数据，我已经为您提供好了，就在`./RemNet/mnist_data`中
+
+## 有关RemNet的更多信息
+
 RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube和Blob。在RemNet中，它们之间的关系如下图
 
 ![](https://s2.ax1x.com/2020/02/16/3pfBng.png)

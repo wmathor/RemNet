@@ -19,6 +19,18 @@
 
 RemNet is an open source deep learning framework based on C++. It is very easy to use, you only need to define the network structure and set the relevant parameters can start training
 
+## 下载
+
+```shell
+$ git clone 
+```
+
+After cloned locally, import the project using visual studio and run it. Very simple. You can also try to modify the information in `myModel.json`, such as adding additional layers, and then rerun.
+
+By the way, you don't need to prepare any data at first, I've provided it for you, right here in`./remnet/mnist_data`
+
+## More about RemNet
+
 RemNet is written in a similar way to Caffee in that its basic data types include Cube and Blob. In RemNet, the relationship between them is shown below
 
 ![](https://s2.ax1x.com/2020/02/16/3pfBng.png)

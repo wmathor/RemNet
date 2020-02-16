@@ -15,7 +15,7 @@
   </a>
 </p>
 
-[中文](https://github.com/mathors/2019-nCoV/blob/master/README-cn.md) | [English](https://github.com/mathors/2019-nCoV)
+[中文](https://github.com/wmathor/RemNet/blob/master/README-cn.md) | [English](https://github.com/wmathor/RemNet)
 
 RemNet是基于C++编写的开源深度学习框架。它非常容易上手使用，只需要您定义好网络结构并设定相关参数即可开始训练。
 

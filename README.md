@@ -29,3 +29,28 @@ Here is a simple network diagram to help you understand the Net, Layer, and Blob
 
 
 
+## FAQ
+
+1. Why is this project called RemNet?
+
+   Because I like a girl called レ ム, her name on the English translation is Rem:heart:
+
+2. What can I do?
+
+   You can `fork` the project and add new features to it. If someone helps maintain the project, I'll add a list of "contributors" and expect you to be the first
+
+3. Can I take it to a competition or business?
+
+   If you are a contributor, I can consider it. Otherwise, you can't. For details, please refer to "license".
+
+## :tada:TODO
+
+- [ ] Achieve the fine-tune function
+- [ ] Realize the Dropout layer
+- [ ] Implement more optimizers
+- [ ] Implement support for L2 regularization
+- [ ] Implement a common image data interface
+
+## LICENSE
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.

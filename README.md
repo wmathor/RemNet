@@ -8,7 +8,7 @@
     <img src="https://img.shields.io/badge/language-C++-brightgreen.svg">
   </a>
   <a href = "https://github.com/wmathor/RemNet">
-    <img src = "https://img.shields.io/badge/Visual-Studio-blue.svg">
+    <img src = "https://img.shields.io/badge/Compiler-Visual Studio 2019-blue.svg">
   </a>
   <a href = "https://wmathor.com/" target = "_blank">
     <img src = "https://img.shields.io/badge/Blog-wmathor-orange.svg">

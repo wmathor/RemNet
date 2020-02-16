@@ -19,10 +19,10 @@
 
 RemNet is an open source deep learning framework based on C++. It is very easy to use, you only need to define the network structure and set the relevant parameters can start training
 
-## 下载
+## Download
 
 ```shell
-$ git clone 
+$ git clone https://github.com/wmathor/RemNet.git
 ```
 
 After cloned locally, import the project using visual studio and run it. Very simple. You can also try to modify the information in `myModel.json`, such as adding additional layers, and then rerun.

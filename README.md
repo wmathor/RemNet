@@ -57,9 +57,9 @@ Here is a simple network diagram to help you understand the Net, Layer, and Blob
 
 ## :tada:TODO
 
-- [ ] Achieve the fine-tune function
+- [x] Achieve the fine-tune function
 - [ ] Realize the Dropout layer
-- [ ] Implement more optimizers
+- [x] Implement more optimizers
 - [ ] Implement support for L2 regularization
 - [ ] Implement a common image data interface
 

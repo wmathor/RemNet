@@ -23,11 +23,13 @@
     <ClCompile Include="myBlob.cpp" />
     <ClCompile Include="myLayer.cpp" />
     <ClCompile Include="myNet.cpp" />
+    <ClCompile Include="RemNet.snapshotModel.pb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myBlob.hpp" />
     <ClInclude Include="myLayer.hpp" />
     <ClInclude Include="myNet.hpp" />
+    <ClInclude Include="RemNet.snapshotModel.pb.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="myModel.json" />
@@ -115,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

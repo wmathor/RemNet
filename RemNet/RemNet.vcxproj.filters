@@ -27,6 +27,9 @@
     <ClCompile Include="myNet.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RemNet.snapshotModel.pb.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myBlob.hpp">
@@ -36,6 +39,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="myNet.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RemNet.snapshotModel.pb.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

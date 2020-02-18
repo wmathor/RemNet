@@ -79,22 +79,18 @@ void ReadMnistLabel(string path, shared_ptr<Blob>& labels) {
 		cout << "no label file found :-(" << endl;
 }
 
-void trainModel(string configFile, shared_ptr<Blob> x, shared_ptr<Blob> y) {
-	NetParam net_param;
-
-	// 0. 读取myModel.json并解析
-	net_param.readNetParam(configFile);
+void trainModel(NetParam& net_param, shared_ptr<Blob> x_train_ori, shared_ptr<Blob> y_train_ori) {
 
 	vector<string> layers = net_param.layers;
 	vector<string> ltypes = net_param.ltypes;
 
 
 	// 1. 将60000张图片以59:1的比例划分为训练集和测试集
-	shared_ptr<Blob> x_train(new Blob(x->subBlob(0, 59000)));
-	shared_ptr<Blob> y_train(new Blob(y->subBlob(0, 59000)));
+	shared_ptr<Blob> x_train(new Blob(x_train_ori->subBlob(0, 59000)));
+	shared_ptr<Blob> y_train(new Blob(y_train_ori->subBlob(0, 59000)));
 
-	shared_ptr<Blob> x_val(new Blob(x->subBlob(59000, 60000)));
-	shared_ptr<Blob> y_val(new Blob(y->subBlob(59000, 60000)));
+	shared_ptr<Blob> x_val(new Blob(x_train_ori->subBlob(59000, 60000)));
+	shared_ptr<Blob> y_val(new Blob(y_train_ori->subBlob(59000, 60000)));
 
 	vector<shared_ptr<Blob>> xx{ x_train, x_val };
 	vector<shared_ptr<Blob>> yy{ y_train, y_val };
@@ -111,13 +107,50 @@ void trainModel(string configFile, shared_ptr<Blob> x, shared_ptr<Blob> y) {
 	cout << "--------Train end...--------" << endl;
 }
 
+void trainModel_with_exVal(NetParam& net_param, shared_ptr<Blob> x_train_ori, shared_ptr<Blob> y_trian_ori, 
+								shared_ptr<Blob> x_val_ori, shared_ptr<Blob> y_val_ori) {
+	vector<string> layers = net_param.layers;
+	vector<string> ltypes = net_param.ltypes;
+
+	vector<shared_ptr<Blob>> xx{ x_train_ori, x_val_ori };
+	vector<shared_ptr<Blob>> yy{ y_trian_ori, y_val_ori };
+
+	// 2. 初始化网络结构
+	Net myModel;
+	myModel.initNet(net_param, xx, yy);
+
+	// 3. 开始训练
+	cout << "--------Train start...--------" << endl;
+
+	myModel.trainNet(net_param);
+
+	cout << "--------Train end...--------" << endl;
+}
+
 int main(int argc, char** argv) {
+	string configFile = "./myModel.json";
+	NetParam net_param;
+
+	// 0. 读取myModel.json并解析
+	net_param.readNetParam(configFile);
+
 	// 创建两个Blob对象，一个用来存图片，一个用来存标签
-	shared_ptr<Blob> images(new Blob(60000, 1, 28, 28, TZEROS));
-	shared_ptr<Blob> labels(new Blob(60000, 10, 1, 1, TZEROS)); // one-hot
-	ReadMnistData("mnist_data/train/train-images.idx3-ubyte", images);
-	ReadMnistLabel("mnist_data/train/train-labels.idx1-ubyte", labels);
+	shared_ptr<Blob> images_train(new Blob(60000, 1, 28, 28, TZEROS));
+	shared_ptr<Blob> labels_train(new Blob(60000, 10, 1, 1, TZEROS)); // one-hot
+	ReadMnistData("mnist_data/train/train-images.idx3-ubyte", images_train);
+	ReadMnistLabel("mnist_data/train/train-labels.idx1-ubyte", labels_train);
+
+	shared_ptr<Blob> images_test(new Blob(10000, 1, 28, 28, TZEROS));
+	shared_ptr<Blob> labels_test(new Blob(10000, 10, 1, 1, TZEROS)); // one-hot
+	ReadMnistData("mnist_data/test/t10k-images.idx3-ubyte", images_test);
+	ReadMnistLabel("mnist_data/test/t10k-labels.idx1-ubyte", labels_test);
+
+	int samples_num = 1000;
+	shared_ptr<Blob> x_train(new Blob(images_train->subBlob(0, samples_num)));
+	shared_ptr<Blob> y_train(new Blob(labels_train->subBlob(0, samples_num)));
+	shared_ptr<Blob> x_test(new Blob(images_test->subBlob(0, samples_num)));
+	shared_ptr<Blob> y_test(new Blob(labels_test->subBlob(0, samples_num)));
 	
-	trainModel("./myModel.json", images, labels);
+	trainModel_with_exVal(net_param, x_train, y_train, x_test, y_test);
 
 }

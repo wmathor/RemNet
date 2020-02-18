@@ -1,41 +1,53 @@
 // 网络配置
 {
-    "train":{
-        // 初始学习率
-        "learning rate":0.05,
-        
-        // 学习率衰减
-        "lr decay":0.99,
-        
-        // 更新策略 sgd/momentum/rmsprop/adagrad
-        "update method":"momentum",
-        "momentum parameter":0.95,
-        
-        "epochs":2,
-        // 是否使用mini-batch梯度下降算法做优化
-        "use batch":true,
-        
-        "batch size":32,
-        
-        // 迭代多少次后进行一次测试
-        "acc frequence":1,
-        
-        // 是否更新学习率
-        "frequence update":true,
-        
-        // 是否需要保存模型
-        "snapshot":false,
-        // 每隔几个迭代周期保存一次模型
-        "snapshot interval":10,
-        
-        // 是否以fine_tune方式训练
-        "fine tune":false,
-        
-        // 预训练模型所在路径
-        "pre trained model":"./iter20.gordonmodel"
-    },
+  "train": {
+    // 初始学习率
+    "learning rate": 0.001,
+
+    // 学习率衰减
+    "lr decay": 0.99,
+
+    // 更新策略 sgd/momentum/rmsprop/adagrad
+    "update method": "rmsprop",
+    "momentum parameter": 0.95,
+
+    // 正则化系数
+    "reg coefficient": 0,
+
+    // rmsprop优化器的衰减系数
+    "rmsprop": 0.95,
+
+    "epochs": 2,
+    // 是否使用mini-batch梯度下降算法做优化
+    "use batch": true,
+
+    "batch size": 32,
+
+    // 迭代多少次后进行一次测试
+    "acc frequence": 2,
+
+    // 是否更新学习率
+    "frequence update": true,
+
+    // 是否需要保存模型
+    "snapshot": false,
+    // 每隔几个迭代周期保存一次模型
+    "snapshot interval": 5,
+
+    // 是否以fine_tune方式训练
+    "fine tune": false,
+
+    // 预训练模型所在路径
+    "pre trained model": "./iter40.RemNetModel"
+  },
 
   "net": [
+    {
+      "name": "drop1", // 层名
+      "type": "Dropout", // 层类型
+      "drop rate": 0.5 // dropout比例
+    },
+
     {
       "name": "conv1", // 层名
       "type": "Conv", // 层类型
@@ -43,7 +55,8 @@
       "kernel height": 3, // 卷积核高
       "kernel width": 3, // 卷积核宽
       "pad": 1, // 填充数
-      "stride": 1 // 滑动步长
+      "stride": 1, // 滑动步长
+      "conv weight init": "msra" // 权重初始化方式 msra/gaussian
     },
 
     {
@@ -62,11 +75,35 @@
     {
       "name": "fc1", // 层名
       "type": "FC", // 层类型
-      "kernel num": 10 // 神经元个数
+      "kernel num": 256, // 神经元个数
+      "fc weight init": "msra"
     },
+
     {
-      "name": "softmax", // 层名
-      "type": "Softmax" // 层类型
+      "name": "drop2", // 层名
+      "type": "Dropout", // 层类型
+      "drop rate": 0.5 // dropout比例
+    },
+
+    {
+      "name": "fc2", // 层名
+      "type": "FC", // 层类型
+      "kernel num": 128, // 神经元个数
+      "fc weight init": "msra"
+    },
+
+    {
+      "name": "fc3", // 层名
+      "type": "FC", // 层类型
+      "kernel num": 10, // 神经元个数
+      "fc weight init": "msra"
+    },
+
+    {
+      //"name": "softmax", // 层名
+      //"type": "Softmax" // 层类型
+      "name": "SVM",
+      "type": "SVM"
     }
   ]
 }

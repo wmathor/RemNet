@@ -67,7 +67,7 @@ Blob Blob::subBlob(int start, int end) {
 	}
 }
 
-Blob& Blob::operator*=(const double k) {
+Blob& Blob::operator*=(double k) {
 	for (int i = 0; i < N; i++)
 		blob_data[i] = blob_data[i] * k;
 	return *this;
@@ -92,6 +92,13 @@ void Blob::maxIn(double val) {
 	return;
 }
 
+void Blob::convertIn(double val) {
+	assert(!blob_data.empty());
+	for (int i = 0; i < N; i++)
+		blob_data[i].transform([val](double e) {return e > val ? 0 : 1; });
+	return;
+}
+
 vector<int> Blob::size() const {
 	vector<int> shape{N, C, H, W};
 	return shape;
@@ -102,7 +109,7 @@ Blob::Blob(const vector<int> shape, int type) : N(shape[0]), C(shape[1]), H(shap
 	init(N, C, H, W, type);
 }
 
-Blob operator*(Blob& A, Blob& B) {
+Blob operator*(Blob A, Blob B) {
 	// 确保两个输入Blob尺寸一样
 	vector<int> size_A = A.size();
 	vector<int> size_B = B.size();
@@ -127,7 +134,7 @@ Blob Blob::unPad(int pad) {
 	return out;
 }
 
-Blob operator*(double num, Blob& B) {
+Blob operator*(double num, Blob B) {
 	// 遍历所有cube，每个cube都乘上一个值
 	int N = B.getN();
 	Blob out(B.size());
@@ -136,16 +143,73 @@ Blob operator*(double num, Blob& B) {
 	return out;
 }
 
-Blob operator+(Blob& A, Blob& B) {
+Blob operator+(Blob A, Blob B) {
+	//(1) 确保两个输入Blob尺寸一样
+	vector<int> size_A = A.size();
+	vector<int> size_B = B.size();
+	for (int i = 0; i < 4; ++i)
+		assert(size_A[i] == size_B[i]);
+	//(2) 遍历所有的cube，每一个cube做对应位置相加（cube + cube）
+	int N = size_A[0];
+	Blob C(A.size());
+	for (int i = 0; i < N; ++i)
+		C[i] = A[i] + B[i];
+	return C;
+}
+
+Blob operator+(Blob A, double val) {
+	int N = A.getN();
+	Blob out(A.size());
+	for (int i = 0; i < N; ++i)
+		out[i] = A[i] + val;
+	return out;
+}
+
+Blob operator/(Blob A, Blob B) {
+
 	// 确保两个输入Blob尺寸一样
 	vector<int> size_A = A.size();
 	vector<int> size_B = B.size();
 	for (int i = 0; i < 4; i++)
 		assert(size_A[i] == size_B[i]);
 	Blob C(A.size());
-	// 遍历所有cube，每个cube对应位置相加 (cube + cube)
+	// 遍历所有cube，每个cube对应位置做相除法 (cube / cube)
 	int N = size_A[0];
 	for (int i = 0; i < N; i++)
-		C[i] = A[i] + B[i];
+		C[i] = A[i] / B[i];
 	return C;
+}
+
+
+Blob sqrt(Blob A) {
+	int N = A.getN();
+	Blob out(A.size());
+	for (int i = 0; i < N; ++i)
+		out[i] = arma::sqrt(A[i]);
+	return out;
+}
+
+Blob operator/(Blob A, double val) {
+	int N = A.getN();
+	Blob out(A.size());
+	for (int i = 0; i < N; i++)
+		out[i] = A[i] / val;
+	return out;
+}
+
+Blob square(Blob A) {
+	int N = A.getN();
+	Blob out(A.size());
+	for (int i = 0; i < N; i++)
+		out[i] = arma::square(A[i]);
+	return out;
+}
+
+double accu(Blob A) {
+	double res = 0;
+	int N = A.getN();
+	Blob out(A.size());
+	for (int i = 0; i < N; i++)
+		res += arma::accu(A[i]);
+	return res;
 }

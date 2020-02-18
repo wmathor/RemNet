@@ -23,15 +23,22 @@ public:
 	Blob(const vector<int> shape, int type = TDEFAULT);
 	void print(string str = "");
 	cube& operator[](int i);
-	Blob& operator*=(const double i);
+	Blob& operator*=(double i);
 	Blob& operator=(double val);
-	friend Blob operator*(Blob& A, Blob& B);
-	friend Blob operator*(double num, Blob& B);
-	friend Blob operator+(Blob& A, Blob& B);
+	friend Blob operator*(Blob A, Blob B);
+	friend Blob operator*(double num, Blob B);
+	friend Blob operator+(Blob A, Blob B);
+	friend Blob operator+(Blob A, double val);
+	friend Blob operator/(Blob A, Blob B);
+	friend Blob sqrt(Blob A);
+	friend Blob square(Blob A);
+	friend double accu(Blob A);
+	friend Blob operator/(Blob A, double val);
 	vector<cube>& get_data();
 	Blob subBlob(int start, int end);
 	Blob pad(int pad, double val = 0);
 	void maxIn(double val = 0);
+	void convertIn(double val = 0);
 	vector<int> size() const;
 	Blob unPad(int pad);
 	inline int getN() const { return N; }

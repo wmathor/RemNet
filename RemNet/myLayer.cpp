@@ -39,7 +39,10 @@ void ConvLayer::initLayer(const vector<int>& inShape, const string& lname, vecto
 	// 2. 初始化存储weight和bias的Blob (in[1], in[2]) = (w, b)
 	if (!in[1]) { // 存储weight的blob不为空
 		in[1].reset(new Blob(tF, tC, tH, tW, TRANDN));
-		(*in[1]) *= 1e-2;
+		if (param.conv_weight_init == "msra")
+			(*in[1]) *= std::sqrt(2 / (double)(inShape[1] * inShape[2] * inShape[3]));
+		else
+			(*in[1]) *= 1e-2;
 	}
 	if (!in[2]) { // 存储bias的blob不为空
 		in[2].reset(new Blob(tF, 1, 1, 1, TRANDN));
@@ -69,8 +72,10 @@ void FCLayer::initLayer(const vector<int>& inShape, const string& lname, vector<
 		// 2. 初始化存储weight和bias的Blob (in[1], in[2]) = (w, b)
 		if (!in[1]) { // 存储weight的blob不为空
 			in[1].reset(new Blob(tF, tC, tH, tW, TRANDN));
-			(*in[1]) *= 1e-2;
-			
+			if (param.fc_weight_init == "msra")
+				(*in[1]) *= std::sqrt(2 / (double)(inShape[1] * inShape[2] * inShape[3]));
+			else
+				(*in[1]) *= 1e-2;
 		}
 		if (!in[2])// 存储bias的blob不为空
 			in[2].reset(new Blob(tF, 1, 1, 1, TZEROS));
@@ -150,7 +155,7 @@ void FCLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const
 	return;
 }
 ///////////////////////////////////forward///////////////////////////////////
-void ConvLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param) {
+void ConvLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
 	if (out)
 		out.reset();
 	// 1. 获取相关参数（输入，卷积核，输出）
@@ -191,7 +196,7 @@ void ConvLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& ou
  	return;
 }
 
-void ReLULayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param) {
+void ReLULayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
 	if (out)
 		out.reset();
 	out.reset(new Blob(*in[0]));
@@ -199,7 +204,7 @@ void ReLULayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& ou
 	return;
 }
 
-void PoolLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param) {
+void PoolLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
 	if (out)
 		out.reset();
 	// 1. 获取相关参数（输入，池化核，输出）
@@ -226,7 +231,7 @@ void PoolLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& ou
 	return;
 }
 
-void FCLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param) {
+void FCLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
 
 
 
@@ -402,4 +407,64 @@ void ConvLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Bl
 	// 去掉输出梯度中的padding部分
 	(*grads[0]) = pad_dx.unPad(param.conv_pad);
 	return;
+}
+
+void SVMLossLayer::hinge_with_logits(const vector<shared_ptr<Blob>>& in, double& loss, shared_ptr<Blob>& dout) {
+	if (dout)
+		dout.reset();
+
+	// 1. 获取相关尺寸
+	int N = in[0]->getN();
+	int C = in[0]->getC();
+	int Hx = in[0]->getH();
+	int Wx = in[0]->getW();
+	assert(Hx == 1 && Wx == 1);
+
+	dout.reset(new Blob(N, C, Hx, Wx)); // (N, C, 1, 1)
+	double loss_ = 0;
+	double delta = 0.2;
+	for (int i = 0; i < N; i++) {
+		// 计算Loss
+		int idx_max = (*in[1])[i].index_max();
+		double positive_x = (*in[0])[i](0, 0, idx_max);
+		cube tmp = ((*in[0])[i] - positive_x + delta); // hinge Loss公式
+		tmp(0, 0, idx_max) = 0; // 剔除正确类别里面的值
+		tmp.transform([](double e) {return e > 0 ? e : 0; });
+		arma::accu(tmp); // 得到所有类别的损失
+		loss_ += arma::accu(tmp);
+		
+		// 计算Gradient
+		tmp.transform([](double e) {return e ? 1 : 0; });
+		tmp(0, 0, idx_max) = -arma::accu(tmp);
+		(*dout)[i] = tmp;
+	}
+	loss = loss_ / N;
+	return;
+}
+
+void DropoutLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
+	return;
+}
+void DropoutLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
+	outShape.assign(inShape.begin(), inShape.end());
+	return;
+}
+void DropoutLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
+	if (out)
+		out.reset();
+	if (mode == "TRAIN") {
+		double drop_rate = param.drop_rate;
+		assert(drop_rate >= 0 && drop_rate <= 1);
+		shared_ptr<Blob> in_mask(new Blob(in[0]->size(), TRANDU));
+		in_mask->convertIn(drop_rate);
+		drop_mask.reset(new Blob(*in_mask));
+		out.reset(new Blob((*in[0]) * (*in_mask) / (1 - drop_rate)));
+	}
+	else
+		out.reset(new Blob((*in[0])));
+}
+void DropoutLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Blob>>& cache,
+	vector<shared_ptr<Blob>>& grads, const Param& param) {
+	double drop_rate = param.drop_rate;
+	grads[0].reset(new Blob((*din) * (*drop_mask) / (1 - drop_rate)));
 }

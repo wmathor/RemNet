@@ -1,0 +1,24 @@
+// 编译命令(cmd终端)
+// protoc -I=./ --cpp_out=./ ./RemNet.snapshotModel.proto
+
+syntax="proto2";
+
+package RemNet;  // 经过编译后，对应着生成的c++文件中的命名空间
+
+message snapshotModel {
+    message paramBlok {
+        required string param_type = 1;
+        required string layer_name = 2;
+        required int32  kernel_n   = 3;
+        required int32  kernel_c   = 4;
+        required int32  kernel_h   = 5;
+        required int32  kernel_w   = 6;
+        
+        message paramValue {
+            required double value = 1;
+        }
+        repeated paramValue param_value = 7;
+    }
+    
+    repeated paramBlok param_blok = 1;
+}

@@ -2,6 +2,7 @@
 #define __MYNET_HPP__
 #include "myLayer.hpp"
 #include "myBlob.hpp"
+#include "RemNet.snapshotModel.pb.h"
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -21,6 +22,10 @@ struct NetParam { // whole Model parameters
 	std::string optimizer;
 	// momentum parameter
 	double momentum;
+	// rmsprop parameter
+	double rmsprop;
+	// L2 parameter
+	double reg;
 	// epochs
 	int epochs;
 	// use mini-batch gradient descent?
@@ -58,7 +63,10 @@ public:
 	void train_with_batch(shared_ptr<Blob>& x, shared_ptr<Blob>& y, NetParam& param, string mode="TRAIN");
 	void optimizer_with_batch(NetParam& param);
 	void evaluate_with_batch(NetParam& param);
+	void regular_with_batch(NetParam& param, string mode="TRAIN");
 	double calc_accuracy(Blob& y, Blob& pred);
+	void saveModelParam(shared_ptr<RemNet::snapshotModel>& snapshot_model);
+	void loadModelParam(const shared_ptr<RemNet::snapshotModel>& snapshot_model);
 private:
 	// Train Data
 	shared_ptr<Blob> x_train;
@@ -70,7 +78,8 @@ private:
 
 	vector<string> layers; // layer name
 	vector<string> ltypes; // layer type
-	double loss_;
+	double train_loss;
+	double val_loss;
 	double train_accu;
 	double val_accu;
 
@@ -79,6 +88,7 @@ private:
 	unordered_map<string, vector<shared_ptr<Blob>>> gradient; // the needed Blob for backward
 	unordered_map<string, shared_ptr<Layer>> myLayers;
 	unordered_map<string, vector<int>> outShapes; // every layer output shape
+	unordered_map<string, vector<shared_ptr<Blob>>> step_cache; // save 累加梯度，主要用于momentum和rmsprop
 
 };
 

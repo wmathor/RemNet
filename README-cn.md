@@ -56,9 +56,9 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 ## :tada:TODO
 
 - [x] 实现Fine-tune功能
-- [ ] 实现Dropout层
+- [x] 实现Dropout层
 - [x] 实现更多的优化器
-- [ ] 实现对L2正则化的支持
+- [x] 实现对L2正则化的支持
 - [ ] 实现通用的图片数据接口
 
 ## 许可

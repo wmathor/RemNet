@@ -58,9 +58,9 @@ Here is a simple network diagram to help you understand the Net, Layer, and Blob
 ## :tada:TODO
 
 - [x] Achieve the fine-tune function
-- [ ] Realize the Dropout layer
+- [x] Realize the Dropout layer
 - [x] Implement more optimizers
-- [ ] Implement support for L2 regularization
+- [x] Implement support for L2 regularization
 - [ ] Implement a common image data interface
 
 ## LICENSE

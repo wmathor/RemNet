@@ -1,5 +1,3 @@
-<script type="text/javascript" src="[http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default">](http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default%22%3E%3C/script%3E) 
-
 <p align = "center">
   <a href = "https://github.com/wmathor/RemNet">
     <img height="60%" width = "70%" src = "https://s2.ax1x.com/2020/02/16/3prR1J.png">
@@ -65,7 +63,7 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 
 很明显，对于标签我进行了one-hot Encoding，这方便后面的Loss计算，而且都统一成Blob的格式相比于普通的数据类型更有助于理解，因为绝大多数深度学习问题都是这么做的。
 
-即便是MNIST数据集也有60000个样本，因此无法一次性输入，所以RemNet也支持开发者自己设置batch size。假设我定义了一个超小型的卷积神经网络（Conv->ReLU->Pool->FC->Softmax/SVM），前向传播和反向传播的过程如下图。你会注意到，有些层里面只有$x$，没有$w$和$b$，但为了编程方便，我都声明了，只不过没有使用而已。同样，反向传播的时候也是一样，有的层根本没有$w$和$b$的梯度信息
+即便是MNIST数据集也有60000个样本，因此无法一次性输入，所以RemNet也支持开发者自己设置batch size。假设我定义了一个超小型的卷积神经网络（Conv->ReLU->Pool->FC->Softmax/SVM），前向传播和反向传播的过程如下图。你会注意到，有些层里面只有x，没有w和b，但为了编程方便，我都声明了，只不过没有使用而已。同样，反向传播的时候也是一样，有的层根本没有w和b梯度信息
 
 ![](https://s2.ax1x.com/2020/02/19/3EXyYd.png)
 

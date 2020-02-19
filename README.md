@@ -19,12 +19,12 @@
 
 RemNet is an open source deep learning framework based on C++. It is very easy to use, you only need to define the network structure and set the relevant parameters can start training
 
-- [Download](https://github.com/wmathor/RemNet/)
-- [More about RemNet](https://github.com/wmathor/RemNet/)
-  - [Design focus](https://github.com/wmathor/RemNet/)
-  - [FAQ](https://github.com/wmathor/RemNet/)
-- [TODO](https://github.com/wmathor/RemNet/)
-- [LICENSE](https://github.com/wmathor/RemNet/)
+- [Download](https://github.com/wmathor/RemNet#download)
+- [More about RemNet](https://github.com/wmathor/RemNet#more-about-remnet)
+  - [Design focus](https://github.com/wmathor/RemNet#design-focus)
+  - [FAQ](https://github.com/wmathor/RemNet#faq)
+- [TODO](https://github.com/wmathor/RemNet#-todo)
+- [LICENSE](https://github.com/wmathor/RemNet#license)
 
 ## Download
 

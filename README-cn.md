@@ -24,7 +24,7 @@ RemNet是基于C++编写的开源深度学习框架。它非常容易上手使�
   - [设计重点](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%AE%BE%E8%AE%A1%E9%87%8D%E7%82%B9)
   - [FAQ](https://github.com/wmathor/RemNet/blob/master/README-cn.md#faq)
 - [TODO](https://github.com/wmathor/RemNet/blob/master/README-cn.md#art-todo)
-- [许可](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%AE%B8%E5%8F%AF)
+- [LICENSE](https://github.com/wmathor/RemNet/blob/master/README-cn.md#LICENSE)
 
 ## 下载
 
@@ -86,7 +86,7 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 
 4. 是否可以商用？
 
-   如果您是"贡献者"的一员，我可以考虑。否则不可以，具体的内容请看"许可"
+   如果您是"贡献者"的一员，我可以考虑。否则不可以，具体的内容请看"LICENSE"
 
 ## :art: TODO
 
@@ -97,6 +97,6 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 - [ ] 支持GPU训练（有生之年系列）
 - [ ] 设计图形界面（有生之年系列×2）
 
-## 许可
+## LICENSE
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br/>本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。

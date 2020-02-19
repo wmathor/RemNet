@@ -7,7 +7,7 @@
 using std::vector;
 using std::shared_ptr;
 
-struct Param { // every layer Parameters
+struct Param { // Parameters for each layer
 	
 	// 1. Conv Layer parameters
 	int conv_stride;
@@ -29,6 +29,7 @@ struct Param { // every layer Parameters
 	// 4. Dropout Layer parameters
 	double drop_rate;
 };
+
 class Layer {
 public:
 	Layer(){}
@@ -109,5 +110,49 @@ class SVMLossLayer {
 public:
 	static void hinge_with_logits(const vector<shared_ptr<Blob>>& in, double& loss, shared_ptr<Blob>& dout);
 };
+
+class BNLayer : public Layer {
+public:
+	BNLayer() :running_mean_std_init(false) {}
+	~BNLayer(){}
+	void initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param);
+	void calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param);
+	void forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode);
+	void backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Blob>>& cache,
+		vector<shared_ptr<Blob>>& grads, const Param& param);
+private:
+	bool running_mean_std_init;
+	shared_ptr<cube> mean; // negative mean
+	shared_ptr<cube> var;  // variance
+	shared_ptr<cube> std;  // standard deviation
+};
+
+class ScaleLayer : public Layer {
+public:
+	ScaleLayer() {}
+	~ScaleLayer() {}
+	void initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param);
+	void calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param);
+	void forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode);
+	void backward(const shared_ptr<Blob>& din,
+		const vector<shared_ptr<Blob>>& cache,
+		vector<shared_ptr<Blob>>& grads,
+		const Param& param);
+};
+
+class TanhLayer : public Layer {
+public:
+	TanhLayer() {}
+	~TanhLayer() {}
+	void initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param);
+	void calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param);
+	void forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode);
+	void backward(const shared_ptr<Blob>& din,
+		const vector<shared_ptr<Blob>>& cache,
+		vector<shared_ptr<Blob>>& grads,
+		const Param& param);
+};
+
+
 
 #endif  //__MYLAYER_HPP__

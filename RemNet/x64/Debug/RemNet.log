@@ -1,32 +1,4 @@
-﻿  RemNet.snapshotModel.pb.cc
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1445,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1447,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1449,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1455,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1457,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1463,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1465,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1470,15): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1474,15): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1478,15): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(142,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(237,49): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(305,49): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\io\coded_stream.h(902,23): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\io\coded_stream.h(1078,22): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\wire_format_lite_inl.h(663,76): warning C4267: “参数”: 从“size_t”转换到“google::protobuf::uint32”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\wire_format_lite_inl.h(670,76): warning C4267: “参数”: 从“size_t”转换到“google::protobuf::uint32”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\wire_format_lite_inl.h(738,58): warning C4267: “参数”: 从“size_t”转换到“google::protobuf::uint32”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\wire_format_lite_inl.h(739,22): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\wire_format_lite_inl.h(742,58): warning C4267: “参数”: 从“size_t”转换到“google::protobuf::uint32”，可能丢失数据
-F:\github\RemNet\RemNet\include\google\protobuf\wire_format_lite_inl.h(743,22): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\RemNet.snapshotModel.pb.cc(474,60): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\RemNet.snapshotModel.pb.cc(491,60): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\RemNet.snapshotModel.pb.cc(600,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\RemNet.snapshotModel.pb.cc(609,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\RemNet.snapshotModel.pb.cc(652,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\RemNet.snapshotModel.pb.cc(662,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-  main.cpp
+﻿  main.cpp
 F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1445,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
 F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1447,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
 F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1449,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
@@ -43,7 +15,7 @@ F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(305,49): war
   myBlob.cpp
   myLayer.cpp
 F:\github\RemNet\RemNet\myLayer.cpp(21,10): warning C4244: “初始化”: 从“const arma::uword”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\myLayer.cpp(428,15): warning C4244: “初始化”: 从“arma::uword”转换到“int”，可能丢失数据
+F:\github\RemNet\RemNet\myLayer.cpp(426,15): warning C4244: “初始化”: 从“arma::uword”转换到“int”，可能丢失数据
   myNet.cpp
 F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1445,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
 F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1447,17): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
@@ -58,7 +30,7 @@ F:\github\RemNet\RemNet\include\google\protobuf\descriptor.h(1478,15): warning C
 F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(142,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
 F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(237,49): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
 F:\github\RemNet\RemNet\include\google\protobuf\unknown_field_set.h(305,49): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-F:\github\RemNet\RemNet\myNet.cpp(197,23): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+F:\github\RemNet\RemNet\myNet.cpp(193,23): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
   正在生成代码...
 libprotobuf.lib(descriptor.obj) : warning LNK4099: 未找到 PDB“libprotobuf.pdb”(使用“libprotobuf.lib(descriptor.obj)”或在“F:\github\RemNet\x64\Debug\libprotobuf.pdb”中寻找)；正在链接对象，如同没有调试信息一样
 libprotobuf.lib(descriptor.pb.obj) : warning LNK4099: 未找到 PDB“libprotobuf.pdb”(使用“libprotobuf.lib(descriptor.pb.obj)”或在“F:\github\RemNet\x64\Debug\libprotobuf.pdb”中寻找)；正在链接对象，如同没有调试信息一样

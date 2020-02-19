@@ -4,13 +4,13 @@ using namespace std;
 using namespace arma;
 
 Blob::Blob(const int n, const int c, const int h, const int w, int type) :N(n), C(c), H(h), W(w) {
-	arma_rng::set_seed_random(); // 系统随机生成种子
+	arma_rng::set_seed_random(); //	System randomly generates seeds
 	init(N, C, H, W, type);
 }
 
 void Blob::init(const int n, const int c, const int h, const int w, int type) {
 	if (type == TZEROS) {
-		blob_data = vector<cube>(n, cube(h, w, c, fill::zeros)); // 用vector管理n个cube
+		blob_data = vector<cube>(n, cube(h, w, c, fill::zeros)); // Manage n cubes with vector
 		return;
 	}
 	if (type == TONES) {
@@ -22,14 +22,14 @@ void Blob::init(const int n, const int c, const int h, const int w, int type) {
 		return;
 	}
 	if (type == TRANDU) {
-		for (int i = 0; i < n; i++) // 生成n个cube
-			blob_data.push_back(arma::randu<cube>(h, w, c)); // 均匀分布
+		for (int i = 0; i < n; i++) // generate n cubes
+			blob_data.push_back(arma::randu<cube>(h, w, c)); // Uniform distribution
 		return;
 	}
 
 	if (type == TRANDN) {
 		for (int i = 0; i < n; i++)
-			blob_data.push_back(arma::randn<cube>(h, w, c)); // 标准正态分布
+			blob_data.push_back(arma::randn<cube>(h, w, c)); // Standard normal distribution
 		return;
 	}
 }
@@ -37,9 +37,9 @@ void Blob::init(const int n, const int c, const int h, const int w, int type) {
 void Blob::print(string str) {
 	assert(!blob_data.empty());
 	cout << str << endl;
-	for (int i = 0; i < N; i++) { // N为blob中的cube个数
+	for (int i = 0; i < N; i++) { // N is the number of cubes in the blob
 		printf("N = %d\n", i);
-		this->blob_data[i].print(); // 调用cube自己的print方法
+		this->blob_data[i].print(); // Call cube's own print method
 	}
 }
 
@@ -87,8 +87,12 @@ Blob Blob::pad(int pad, double val) {
 }
 void Blob::maxIn(double val) {
 	assert(!blob_data.empty());
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++) {
 		blob_data[i].transform([val](double e) {return e > val ? e : val; });
+		// clipping
+		double clipped = 6.0;
+		blob_data[i].transform([clipped](double e) {return e > clipped ? clipped : e; });
+	}
 	return;
 }
 
@@ -110,14 +114,14 @@ Blob::Blob(const vector<int> shape, int type) : N(shape[0]), C(shape[1]), H(shap
 }
 
 Blob operator*(Blob A, Blob B) {
-	// 确保两个输入Blob尺寸一样
+	// Make sure both input blobs are the same size
 	vector<int> size_A = A.size();
 	vector<int> size_B = B.size();
 	for (int i = 0; i < 4; i++)
 		assert(size_A[i] == size_B[i]);
 	Blob C(A.size());
-	// 遍历所有cube，每个cube对应位置做相乘 (cube % cube)
 	int N = size_A[0];
+	// Traverse all cubes and multiply the corresponding positions of each cube (cube % cube)
 	for (int i = 0; i < N; i++)
 		C[i] = A[i] % B[i];
 	return C;
@@ -135,7 +139,7 @@ Blob Blob::unPad(int pad) {
 }
 
 Blob operator*(double num, Blob B) {
-	// 遍历所有cube，每个cube都乘上一个值
+	// Iterate over all cubes, multiplying each cube by a value
 	int N = B.getN();
 	Blob out(B.size());
 	for (int i = 0; i < N; i++)
@@ -144,13 +148,13 @@ Blob operator*(double num, Blob B) {
 }
 
 Blob operator+(Blob A, Blob B) {
-	//(1) 确保两个输入Blob尺寸一样
+	// Make sure both input blobs are the same size
 	vector<int> size_A = A.size();
 	vector<int> size_B = B.size();
 	for (int i = 0; i < 4; ++i)
 		assert(size_A[i] == size_B[i]);
-	//(2) 遍历所有的cube，每一个cube做对应位置相加（cube + cube）
 	int N = size_A[0];
+	// Traverse all cubes and add the corresponding positions of each cube (cube + cube)
 	Blob C(A.size());
 	for (int i = 0; i < N; ++i)
 		C[i] = A[i] + B[i];
@@ -166,14 +170,12 @@ Blob operator+(Blob A, double val) {
 }
 
 Blob operator/(Blob A, Blob B) {
-
-	// 确保两个输入Blob尺寸一样
 	vector<int> size_A = A.size();
 	vector<int> size_B = B.size();
 	for (int i = 0; i < 4; i++)
 		assert(size_A[i] == size_B[i]);
 	Blob C(A.size());
-	// 遍历所有cube，每个cube对应位置做相除法 (cube / cube)
+	// Traverse all cubes and do phase division for each cube corresponding position (cube / cube)
 	int N = size_A[0];
 	for (int i = 0; i < N; i++)
 		C[i] = A[i] / B[i];

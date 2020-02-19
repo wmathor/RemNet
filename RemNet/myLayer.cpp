@@ -6,7 +6,7 @@ using namespace std;
 using namespace arma;
 
 
-// 将arma::mat转成cv::mat
+// arma::mat converted to cv::mat
 template<typename T>
 void Arma_mat2cv_mat(const arma::Mat<T>& arma_mat_in, cv::Mat_<T>& cv_mat_out) {
 	cv::transpose(cv::Mat_<T>(
@@ -30,26 +30,24 @@ void visiable(const cube& in, vector<cv::Mat_<double>>& vec_mat) {
 
 ///////////////////////////////////initLayer/////////////////////////////////////////
 void ConvLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
-	// 1. 获取卷积核尺寸(F, C, H, W)
+	// 1. Get conv kernel shape (F, C, H, W)
 	int tF = param.conv_kernels;
 	int tC = inShape[1];
 	int tH = param.conv_height;
 	int tW = param.conv_width;
 	
-	// 2. 初始化存储weight和bias的Blob (in[1], in[2]) = (w, b)
-	if (!in[1]) { // 存储weight的blob不为空
+	// 2. Initializes the Blob that stores weight and bias (in[1], in[2]) = (w, b)
+	if (!in[1]) { // The blob that stores weight is not empty
 		in[1].reset(new Blob(tF, tC, tH, tW, TRANDN));
 		if (param.conv_weight_init == "msra")
 			(*in[1]) *= std::sqrt(2 / (double)(inShape[1] * inShape[2] * inShape[3]));
 		else
 			(*in[1]) *= 1e-2;
 	}
-	if (!in[2]) { // 存储bias的blob不为空
+	if (!in[2]) { // The blob that stores bias is not empty
 		in[2].reset(new Blob(tF, 1, 1, 1, TRANDN));
-		(*in[2]) *= 1e-2;
-		
+		(*in[2]) *= 1e-2;	
 	}
-
 	return;
 }
 
@@ -58,51 +56,50 @@ void ReLULayer::initLayer(const vector<int>& inShape, const string& lname, vecto
 }
 
 void PoolLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
-
 	return;
 }
 
 void FCLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
-		// 1. 获取全连接核的尺寸(F, C, H, W)
+		// 1. Get FC shape(F, C, H, W)
 		int tF = param.fc_kernels;
 		int tC = inShape[1];
 		int tH = inShape[2];
 		int tW = inShape[3];
 
-		// 2. 初始化存储weight和bias的Blob (in[1], in[2]) = (w, b)
-		if (!in[1]) { // 存储weight的blob不为空
+		// 2. Initializes the Blob that stores weight and bias (in[1], in[2]) = (w, b)
+		if (!in[1]) { // The blob that stores weight is not empty
 			in[1].reset(new Blob(tF, tC, tH, tW, TRANDN));
 			if (param.fc_weight_init == "msra")
 				(*in[1]) *= std::sqrt(2 / (double)(inShape[1] * inShape[2] * inShape[3]));
 			else
 				(*in[1]) *= 1e-2;
 		}
-		if (!in[2])// 存储bias的blob不为空
+		if (!in[2])// The blob that stores bias is not empty
 			in[2].reset(new Blob(tF, 1, 1, 1, TZEROS));
 		return;
 }
 ///////////////////////////////////calcShape/////////////////////////////////////////
 void ConvLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
-	// 1. 获取输入Blob尺寸
+	// 1. Get input Blob shape
 	int Ni = inShape[0];
 	int Ci = inShape[1];
 	int Hi = inShape[2];
 	int Wi = inShape[3];
 	
-	// 2. 获取卷积核尺寸
+	// 2. Get conv kernel shape
 	int tF = param.conv_kernels; // kernel numers
 	int tH = param.conv_height;  // kernel height
 	int tW = param.conv_width;   // kernel width
 	int tP = param.conv_pad;     // kernel padding
 	int tS = param.conv_stride;  // kernel stride
 
-	// 3. calc Conved shape
+	// 3. Calc conved shape
 	int No = Ni;
 	int Co = tF;
 	int Ho = (Hi + (tP << 1) - tH) / tS + 1;
 	int Wo = (Wi + (tP << 1) - tW) / tS + 1;
 
-	// 4. 赋值输出Blob尺寸
+	// 4. Assign the size of the output Blob
 	outShape[0] = No;
 	outShape[1] = Co;
 	outShape[2] = Ho;
@@ -111,29 +108,29 @@ void ConvLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, con
 }
 
 void ReLULayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
-	outShape.assign(inShape.begin(), inShape.end()); // 将inShape复制一份给outShape（深拷贝）
+	outShape.assign(inShape.begin(), inShape.end()); // Copy inShape to outShape (deep copy)
 	return;
 }
 
 void PoolLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
-	// 1. 获取输入Blob尺寸
+	// 1. Get input Blob shape
 	int Ni = inShape[0];
 	int Ci = inShape[1];
 	int Hi = inShape[2];
 	int Wi = inShape[3];
 
-	// 2. 获取卷积核尺寸
+	// 2. get conv kernel shape
 	int tH = param.pool_height;  // kernel height
 	int tW = param.pool_width;   // kernel width
 	int tS = param.pool_stride;  // kernel stride
 
-	// 3. calc Pooled Shape
+	// 3. Calc pooled shape
 	int No = Ni;
 	int Co = Ci;
 	int Ho = (Hi - tH) / tS + 1;
 	int Wo = (Wi - tW) / tS + 1;
 
-	// 4. 赋值输出Blob尺寸
+	// 4. Assign the size of the output Blob
 	outShape[0] = No;
 	outShape[1] = Co;
 	outShape[2] = Ho;
@@ -141,13 +138,13 @@ void PoolLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, con
 	return;
 }
 void FCLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
-	// 1. 获取输入Blob的尺寸
+	// 1. Get input Blob shape
 	int No = inShape[0]; // batch size
 	int Co = param.fc_kernels; // current layer nn numbers
 	int Ho = 1;
 	int Wo = 1;
 
-	// 2. 赋值
+	// 2. Assign the size of the output Blob
 	outShape[0] = No;
 	outShape[1] = Co;
 	outShape[2] = Ho;
@@ -158,12 +155,12 @@ void FCLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const
 void ConvLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
 	if (out)
 		out.reset();
-	// 1. 获取相关参数（输入，卷积核，输出）
+	// 1. Get related parameters（input, conv kernel, output）
 	assert(in[0]->getC() == in[1]->getC());
-	int N = in[0]->getN();   // input Blob中cube的个数
-	int C = in[0]->getC();   // input Blob中的channel个数
-	int Hx = in[0]->getH();  // input Blob的高
-	int Wx = in[0]->getW();  // input Blob的宽
+	int N = in[0]->getN();   // The number of cubes in the input Blob
+	int C = in[0]->getC();   // The number of channels in the input Blob
+	int Hx = in[0]->getH();  // input Blob height
+	int Wx = in[0]->getW();  // input Blob width
 
 	int F = in[1]->getN();    // number of kernels
 	int Hw = in[1]->getH();   // kernel's height
@@ -192,7 +189,7 @@ void ConvLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& ou
 		}
 	}
 	//vector<cv::Mat_<double>> vec_mat_out;
-	//visiable((*out)[0], vec_mat_out); // 可视化第一个卷积核
+	//visiable((*out)[0], vec_mat_out); // Visualize the first convolution kernel
  	return;
 }
 
@@ -207,11 +204,11 @@ void ReLULayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& ou
 void PoolLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
 	if (out)
 		out.reset();
-	// 1. 获取相关参数（输入，池化核，输出）
-	int N = in[0]->getN();   // input Blob中cube的个数
-	int C = in[0]->getC();   // input Blob中的channel个数
-	int Hx = in[0]->getH();  // input Blob的高
-	int Wx = in[0]->getW();  // input Blob的宽
+	// 1. Get related parameters (input, pooling kernel, output)
+	int N = in[0]->getN();   // The number of cubes in the input Blob
+	int C = in[0]->getC();   // The number of channels in the input Blob
+	int Hx = in[0]->getH();  // input Blob height
+	int Wx = in[0]->getW();  // input Blob width
 
 	int Hw = param.pool_height;   // kernel's height
 	int Ww = param.pool_width;   // kernel's width
@@ -237,12 +234,12 @@ void FCLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out,
 
 	if (out)
 		out.reset();
-	// 1. 获取相关参数（输入，全连接核，输出）
+	// 1. Get related parameters (input, full connection kernel, output)
 
-	int N = in[0]->getN();   // input Blob中cube的个数
-	int C = in[0]->getC();   // input Blob中的channel个数
-	int Hx = in[0]->getH();  // input Blob的高
-	int Wx = in[0]->getW();  // input Blob的宽
+	int N = in[0]->getN();   // The number of cubes in the input Blob
+	int C = in[0]->getC();   // The number of channels in the input Blob
+	int Hx = in[0]->getH();  // input Blob height
+	int Wx = in[0]->getW();  // input Blob width
 
 	int F = in[1]->getN();    // number of kernels
 	int Hw = in[1]->getH();   // kernel's height
@@ -267,7 +264,7 @@ void SoftmaxLossLayer::softmax_cross_entropy_with_logits(const vector<shared_ptr
 	if (dout)
 		dout.reset();
 
-	// 1. 获取相关尺寸
+	// 1. Get related parameters 
 	int N = in[0]->getN();
 	int C = in[0]->getC();
 	int Hx = in[0]->getH();
@@ -280,8 +277,8 @@ void SoftmaxLossLayer::softmax_cross_entropy_with_logits(const vector<shared_ptr
 		// softmax
 		cube prob = arma::exp((*in[0])[i]) / arma::accu(arma::exp((*in[0])[i]));
 		loss_ += (-arma::accu((*in[1])[i] % arma::log(prob)));
-		// 梯度表达式推导
-		(*dout)[i] = prob - (*in[1])[i]; // 计算各个样本产生的误差信号（反向梯度）
+		// Gradient expression derivation
+		(*dout)[i] = prob - (*in[1])[i]; // Calculate the error signal generated by each sample (reverse gradient)
 
 	}
 	loss = loss_ / N;
@@ -318,24 +315,24 @@ void FCLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Blob
 void PoolLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Blob>>& cache,
 	vector<shared_ptr<Blob>>& grads, const Param& param) {
 
-	// 1. 设置输出梯度Blob的尺寸 (dx----grdas[0])
+	// 1. Set the size of the output gradient Blob (dx = grdas[0])
 	grads[0].reset(new Blob(cache[0]->size(), TZEROS));
-	// 2. 获取输入梯度Blob的尺寸
-	int Nd = din->getN();        //输入梯度Blob中cube个数（该batch样本个数）
-	int Cd = din->getC();         //输入梯度Blob通道数
-	int Hd = din->getH();      //输入梯度Blob高
-	int Wd = din->getW();    //输入梯度Blob宽
-	// 3. 获取池化核相关参数
+	// 2. Gets the size of the input gradient Blob
+	int Nd = din->getN();        // Number of cubes in input gradient Blob (number of batch samples)
+	int Cd = din->getC();        // Number of channels for input gradient Blob
+	int Hd = din->getH();        // Number of height for input gradient Blob
+	int Wd = din->getW();        // Number of width for input gradient Blob
+	// 3. Gets the parameters associated with the pooling kernel
 	int Hp = param.pool_height;
 	int Wp = param.pool_width;
 	int stride = param.pool_stride;
 
-	// 4. 开始反向传播
-	for (int n = 0; n < Nd; n++) { // 输出cube数
-		for (int c = 0; c < Cd; c++) { // 输出通道数
-			for (int hh = 0; hh < Hd; hh++) { // 输出Blob的高
-				for (int ww = 0; ww < Wd; ww++) { // 输出Blob的宽
-					// (1)获取掩码mask
+	// 4. Start backward
+	for (int n = 0; n < Nd; n++) { // The output cubes number
+		for (int c = 0; c < Cd; c++) { // The output channels number
+			for (int hh = 0; hh < Hd; hh++) { // The height of the output Blob
+				for (int ww = 0; ww < Wd; ww++) { // The width of the output Blob
+					// (1) get mask
 					mat window = (*cache[0])[n](span(hh * param.pool_stride, hh * param.pool_stride + Hp - 1),
 						span(ww * param.pool_stride, ww * param.pool_stride + Wp - 1),
 						span(c, c));
@@ -345,7 +342,6 @@ void PoolLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Bl
 					(*grads[0])[n](span(hh * param.pool_stride, hh * param.pool_stride + Hp - 1),
 						span(ww * param.pool_stride, ww * param.pool_stride + Wp - 1),
 						span(c, c)) += mask * (*din)[n](hh, ww, c);
-
 				}
 			}
 		}
@@ -357,13 +353,15 @@ void ReLULayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Bl
 	vector<shared_ptr<Blob>>& grads, const Param& param) {
 
 
-	// 1. 设置输出梯度Blob的尺寸 (dx----grdas[0])
+	// 1. Set the size of the output gradient Blob (dx = grdas[0])
 	grads[0].reset(new Blob(*cache[0]));
 
-	// 2. 获取掩码mask
+	// 2. get mask
 	int N = grads[0]->getN();
-	for (int n = 0; n < N; n++) // 输出cube数
-		(*grads[0])[n].transform([](double e) {return e > 0 ? 1 : 0; });
+	for (int n = 0; n < N; n++) {// The output cube number
+		//(*grads[0])[n].transform([](double e) {return e > 0 ? 1 : 0; });
+		(*grads[0])[n].transform([](double e) {return e < 6 ? 1 : 0; });
+	}
 	(*grads[0]) = (*grads[0]) * (*din);
 	return;
 }
@@ -371,28 +369,28 @@ void ReLULayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Bl
 void ConvLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Blob>>& cache,
 	vector<shared_ptr<Blob>>& grads, const Param& param) {
 
-	// 1. 设置输出梯度Blob的尺寸 (dx----grdas[0])
+	// 1. Set the size of the output gradient Blob (dx = grdas[0])
 	grads[0].reset(new Blob(cache[0]->size(), TZEROS));
 	grads[1].reset(new Blob(cache[1]->size(), TZEROS));
 	grads[2].reset(new Blob(cache[2]->size(), TZEROS));
-	// 2. 获取输入梯度Blob的尺寸
-	int Nd = din->getN();        //输入梯度Blob中cube个数（该batch样本个数）
-	int Cd = din->getC();         //输入梯度Blob通道数
-	int Hd = din->getH();      //输入梯度Blob高
-	int Wd = din->getW();    //输入梯度Blob宽
-	// 3. 获取卷积核相关参数
+	// 2. Gets the size of the input gradient Blob
+	int Nd = din->getN();        // Number of cubes in input gradient Blob (number of batch samples)
+	int Cd = din->getC();        // Enter the number of gradient Blob channels
+	int Hd = din->getH();        // Input gradient Blob height
+	int Wd = din->getW();        // Input gradient Blob width
+	// 3. Get the convolution kernel correlation parameters
 	int Hw = param.conv_height;
 	int Ww = param.conv_width;
 	int stride = param.conv_stride;
 
-	// 4. 开始反向传播
+	// 4. start backward
 	Blob padX = cache[0]->pad(param.conv_pad);
 	Blob pad_dx(padX.size(), TZEROS);
-	for (int n = 0; n < Nd; n++) { // 输出cube数
-		for (int c = 0; c < Cd; c++) { // 输出通道数
-			for (int hh = 0; hh < Hd; hh++) { // 输出Blob的高
-				for (int ww = 0; ww < Wd; ww++) { // 输出Blob的宽
-					// (1)获取掩码mask
+	for (int n = 0; n < Nd; n++) {
+		for (int c = 0; c < Cd; c++) {
+			for (int hh = 0; hh < Hd; hh++) {
+				for (int ww = 0; ww < Wd; ww++) {
+					// (1) get mask
 					cube window = padX[n](span(hh * stride, hh * stride + Hw - 1), span(ww * stride, ww * stride + Ww - 1), span::all);
 					// dx
 					pad_dx[n](span(hh * stride, hh * stride + Hw - 1), span(ww * stride, ww * stride + Ww - 1), span::all) += (*din)[n](hh, ww, c) * (*cache[1])[c];
@@ -404,7 +402,7 @@ void ConvLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Bl
 			}
 		}
 	}
-	// 去掉输出梯度中的padding部分
+	// Remove the padding from the output gradient
 	(*grads[0]) = pad_dx.unPad(param.conv_pad);
 	return;
 }
@@ -413,7 +411,7 @@ void SVMLossLayer::hinge_with_logits(const vector<shared_ptr<Blob>>& in, double&
 	if (dout)
 		dout.reset();
 
-	// 1. 获取相关尺寸
+	// 1. Get relevant dimensions
 	int N = in[0]->getN();
 	int C = in[0]->getC();
 	int Hx = in[0]->getH();
@@ -424,16 +422,16 @@ void SVMLossLayer::hinge_with_logits(const vector<shared_ptr<Blob>>& in, double&
 	double loss_ = 0;
 	double delta = 0.2;
 	for (int i = 0; i < N; i++) {
-		// 计算Loss
+		// Calc Loss
 		int idx_max = (*in[1])[i].index_max();
 		double positive_x = (*in[0])[i](0, 0, idx_max);
-		cube tmp = ((*in[0])[i] - positive_x + delta); // hinge Loss公式
-		tmp(0, 0, idx_max) = 0; // 剔除正确类别里面的值
+		cube tmp = ((*in[0])[i] - positive_x + delta); // Hinge Loss formula
+		tmp(0, 0, idx_max) = 0; // Eliminate values in the correct category
 		tmp.transform([](double e) {return e > 0 ? e : 0; });
-		arma::accu(tmp); // 得到所有类别的损失
+		arma::accu(tmp); // get all kinds of losses
 		loss_ += arma::accu(tmp);
 		
-		// 计算Gradient
+		// Calc Gradient
 		tmp.transform([](double e) {return e ? 1 : 0; });
 		tmp(0, 0, idx_max) = -arma::accu(tmp);
 		(*dout)[i] = tmp;
@@ -467,4 +465,219 @@ void DropoutLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr
 	vector<shared_ptr<Blob>>& grads, const Param& param) {
 	double drop_rate = param.drop_rate;
 	grads[0].reset(new Blob((*din) * (*drop_mask) / (1 - drop_rate)));
+}
+
+void BNLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
+	int C = inShape[1];
+	int H = inShape[2];
+	int W = inShape[3];
+	if (!in[1]) 
+		in[1].reset(new Blob(1, C, H, W, TZEROS));
+	if (!in[2])
+		in[2].reset(new Blob(1, C, H, W, TZEROS));
+}
+
+
+void BNLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
+	if (out)
+		out.reset(new Blob(in[0]->size(), TZEROS));
+	int N = in[0]->getN();
+	int C = in[0]->getC();
+	int H = in[0]->getH();
+	int W = in[0]->getW();
+
+	if (mode == "TRAIN") {
+		// clear
+		mean.reset(new cube(1, 1, C, fill::zeros));
+		var.reset(new cube(1, 1, C, fill::zeros));
+		std.reset(new cube(1, 1, C, fill::zeros));
+
+		// calc mean
+		for (int i = 0; i < N; i++)
+			(*mean) += sum(sum((*in[0])[i], 0), 1) / (H * W);
+		(*mean) /= (-N);
+		
+		// calc variance
+		for (int i = 0; i < N; i++)
+			(*var) += square(sum(sum((*in[0])[i], 0), 1) / (H * W) + (*mean));
+		(*var) /= N;
+
+		// calc std
+		(*std) = sqrt((*var) + 1e-5);
+		
+		// broadcast mean and std
+		cube mean_tmp(H, W, C, fill::zeros);
+		cube std_tmp(H, W, C, fill::zeros);
+		for (int c = 0; c < C; c++) {
+			mean_tmp.slice(c).fill(as_scalar((*mean).slice(c)));
+			std_tmp.slice(c).fill(as_scalar((*std).slice(c)));
+		}
+
+		// normalize
+		for (int i = 0; i < N; i++)
+			(*out)[i] = ((*in[0])[i] + mean_tmp) / std_tmp;
+
+		if (!running_mean_std_init) {
+			(*in[1])[0] = mean_tmp;
+			(*in[2])[0] = std_tmp;
+			running_mean_std_init = true;
+		}
+
+		double yita = 0.99;
+		(*in[1])[0] = yita * (*in[1])[0] + (1 - yita) * mean_tmp;
+		(*in[2])[0] = yita * (*in[2])[0] + (1 - yita) * std_tmp;
+	} else 
+		for (int n = 0; n < N; n++)
+			(*out)[n] = ((*in[0])[n] + (*in[1])[0]) / (*in[2])[0];
+}
+
+void BNLayer::backward(const shared_ptr<Blob>& din, const vector<shared_ptr<Blob>>& cache,
+	vector<shared_ptr<Blob>>& grads, const Param& param) {
+	grads[0].reset(new Blob(cache[0]->size(), TZEROS));
+	int N = grads[0]->getN();
+	int C = grads[0]->getC();
+	int H = grads[0]->getH();
+	int W = grads[0]->getW();
+
+	cube mean_tmp(H, W, C, fill::zeros);
+	cube var_tmp(H, W, C, fill::zeros);
+	cube std_tmp(H, W, C, fill::zeros);
+	for (int c = 0; c < C; c++) {
+		mean_tmp.slice(c).fill(as_scalar((*mean).slice(c)));
+		var_tmp.slice(c).fill(as_scalar((*var).slice(c)));
+		std_tmp.slice(c).fill(as_scalar((*std).slice(c)));
+	}
+
+	for (int k = 0; k < N; k++) {
+		cube item1(H, W, C, fill::zeros);
+		for (int i = 0; i < N; i++)
+			item1 += (*din)[i] % ((*cache[0])[i] + mean_tmp);
+		cube tmp = (-sum(sum(item1, 0), 1) / (2 * (*var) % (*std))) / N;
+
+		cube item2(1, 1, C, fill::zeros);
+		for (int i = 0; i < N; i++)
+			item2 += (tmp % (2 * (sum(sum((*cache[0])[i], 0), 1) / (H * W) + (*mean))));
+
+		cube item3(H, W, C, fill::zeros);
+		for (int i = 0; i < N; i++)
+			item2 += (*din)[i] / std_tmp;
+		
+		cube item4(1, 1, C, fill::zeros);
+		item4 = sum(sum(item3, 0), 1);
+
+		cube black0 = (item2 + item4) / (-N);
+		cube red0 = (tmp % (2 * (sum(sum((*cache[0])[k], 0), 1) / (H * W) + (*mean))));
+		cube black_(H, W, C, fill::zeros);
+		cube red_(H, W, C, fill::zeros);
+		cube purple_ = (*din)[k] / std_tmp;
+		for (int c = 0; c < C; ++c) {
+			black_.slice(c).fill(as_scalar(black0.slice(c)));        //cube(H, W, C)
+			red_.slice(c).fill(as_scalar(red0.slice(c)));			//cube(H, W, C)
+		}
+		(*grads[0])[k] = (black_ + red_) / (H * W) + purple_;
+	}
+	return;
+}
+
+void BNLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
+	outShape.assign(inShape.begin(), inShape.end());
+	return;
+}
+
+void ScaleLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
+	int C = inShape[1];
+
+	if (!in[1])
+		in[1].reset(new Blob(1, C, 1, 1, TONES));
+
+	if (!in[2])
+		in[2].reset(new Blob(1, C, 1, 1, TZEROS));
+	return;
+}
+
+void ScaleLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
+	outShape.assign(inShape.begin(), inShape.end());
+	return;
+}
+
+void ScaleLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
+	out.reset(new Blob(in[0]->size(), TZEROS));
+
+	int N = in[0]->getN();
+	int C = in[0]->getC();
+	int H = in[0]->getH();
+	int W = in[0]->getW();
+
+	shared_ptr<Blob> gamma(new Blob(1, C, H, W, TZEROS));
+	shared_ptr<Blob> beta(new Blob(1, C, H, W, TZEROS));
+	for (int c = 0; c < C; ++c) {
+		(*gamma)[0].slice(c).fill(as_scalar((*in[1])[0].slice(c)));
+		(*beta)[0].slice(c).fill(as_scalar((*in[2])[0].slice(c)));
+	}
+
+	for (int n = 0; n < N; ++n)
+		(*out)[n] = (*gamma)[0] % (*in[0])[n] + (*beta)[0];  //out  = γ * in    +  β
+	return;
+}
+
+void ScaleLayer::backward(const shared_ptr<Blob>& din,
+	const vector<shared_ptr<Blob>>& cache,
+	vector<shared_ptr<Blob>>& grads,
+	const Param& param) {
+
+	grads[0].reset(new Blob(cache[0]->size(), TZEROS));//dx  
+	grads[1].reset(new Blob(cache[1]->size(), TZEROS));//dγ
+	grads[2].reset(new Blob(cache[2]->size(), TZEROS));//dβ
+	int N = grads[0]->getN();
+	int C = grads[0]->getC();
+	int H = grads[0]->getH();
+	int W = grads[0]->getW();
+
+	shared_ptr<Blob> gamma(new Blob(1, C, H, W, TZEROS));
+	for (int c = 0; c < C; ++c)
+		(*gamma)[0].slice(c).fill(as_scalar((*cache[1])[0].slice(c)));  //因为dx  = din % γ  ，所以γ 需要广播完成尺寸匹配
+
+	shared_ptr<Blob> dgamma(new Blob(1, C, H, W, TZEROS));
+	shared_ptr<Blob> dbeta(new Blob(1, C, H, W, TZEROS));
+	for (int n = 0; n < N; ++n) {
+		(*grads[0])[n] = (*din)[n] % (*gamma)[0];
+		(*dgamma)[0] += (*din)[n] % (*cache[0])[n];
+		(*dbeta)[0] += (*din)[n];
+	}
+	(*grads[1])[0] = sum(sum((*dgamma)[0], 0), 1) / N;
+	(*grads[2])[0] = sum(sum((*dbeta)[0], 0), 1) / N;
+
+	return;
+}
+
+void TanhLayer::initLayer(const vector<int>& inShape, const string& lname, vector<shared_ptr<Blob>>& in, const Param& param) {
+	return;
+}
+
+void TanhLayer::calcShape(const vector<int>& inShape, vector<int>& outShape, const Param& param) {
+	outShape.assign(inShape.begin(), inShape.end());
+	return;
+}
+
+void TanhLayer::forward(const vector<shared_ptr<Blob>>& in, shared_ptr<Blob>& out, const Param& param, string mode) {
+	if (out)
+		out.reset();
+	out.reset(new Blob(*in[0]));
+	int N = in[0]->getN();
+	for (int n = 0; n < N; ++n)
+		(*out)[n] = (arma::exp((*in[0])[n]) - arma::exp(-(*in[0])[n])) / (arma::exp((*in[0])[n]) + arma::exp(-(*in[0])[n]));
+	return;
+}
+
+void TanhLayer::backward(const shared_ptr<Blob>& din,
+	const vector<shared_ptr<Blob>>& cache,
+	vector<shared_ptr<Blob>>& grads,
+	const Param& param) {
+
+	grads[0].reset(new Blob(*cache[0]));
+
+	int N = grads[0]->getN();
+	for (int n = 0; n < N; ++n)
+		(*grads[0])[n] = (*din)[n] % (1 - arma::square((arma::exp((*cache[0])[n]) - arma::exp(-(*cache[0])[n])) / (arma::exp((*cache[0])[n]) + arma::exp(-(*cache[0])[n]))));
+	return;
 }

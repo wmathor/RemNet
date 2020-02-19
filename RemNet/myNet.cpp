@@ -7,22 +7,22 @@ using namespace std;
 
 void NetParam::readNetParam(string file) {
 	ifstream ifs(file);
-	assert(ifs.is_open()); // 确保文件正确打开
+	assert(ifs.is_open());
 	Json::CharReaderBuilder reader;
 	JSONCPP_STRING errs;
-	Json::Value value;     // 存储器
+	Json::Value value;
 	if (Json::parseFromStream(reader, ifs, &value, &errs)) {
 		
 		if (!value["train"].isNull()) {
-			auto& tparam = value["train"]; // 通过引用方式拿到"train"对象里面的所有元素
-			this->lr = tparam["learning rate"].asDouble(); // 解析成Double类型
+			auto& tparam = value["train"];
+			this->lr = tparam["learning rate"].asDouble();
 			this->lr_decay = tparam["lr decay"].asDouble();
-			this->optimizer= tparam["update method"].asString(); // 解析成String类型
+			this->optimizer= tparam["update method"].asString();
 			this->momentum = tparam["momentum parameter"].asDouble();
 			this->rmsprop = tparam["rmsprop"].asDouble();
 			this->reg = tparam["reg coefficient"].asDouble();
-			this->epochs = tparam["epochs"].asInt(); // 解析成Int类型
-			this->use_batch = tparam["use batch"].asBool(); // 解析成Bool类型
+			this->epochs = tparam["epochs"].asInt();
+			this->use_batch = tparam["use batch"].asBool();
 			this->batch_size = tparam["batch size"].asInt();
 			this->acc_frequence = tparam["acc frequence"].asInt();
 			this->update_lr = tparam["frequence update"].asBool();
@@ -70,49 +70,48 @@ void NetParam::readNetParam(string file) {
 }
 
 void Net::initNet(NetParam& param, vector<shared_ptr<Blob>>& x, vector<shared_ptr<Blob>>& y) {
-	// 1. 打印层结构
+	// 1. Print layer structure
 	layers = param.layers;
 	ltypes = param.ltypes;
 	for (int i = 0; i < layers.size(); i++)
 		cout << "layer = " << layers[i] << "," << "ltypes = " << ltypes[i] << endl;
 
-	// 2. 初始化Net类中的成员变量
+	// 2. Initializes the member variables in the Net class
 	x_train = x[0];
 	y_train = y[0];
 	x_val = x[1];
 	y_val = y[1];
 
-	for (int i = 0; i < (int)layers.size(); i++) { // 遍历每一层
+	for (int i = 0; i < (int)layers.size(); i++) { // Go through each layer
 		data[layers[i]] = vector<shared_ptr<Blob>>(3, NULL); //x, w, b
 		gradient[layers[i]] = vector<shared_ptr<Blob>>(3, NULL);
 		step_cache[layers[i]] = vector<shared_ptr<Blob>>(3, NULL);
-		outShapes[layers[i]] = vector<int>(4); // 定义缓存，存储每一层的输出尺寸
+		outShapes[layers[i]] = vector<int>(4); // Define the cache to store the output size of each layer
 	}
 
-	 // 3. 完成每一层w和b的初始化
+	 // 3. Complete the initialization of each layer w and b
 	shared_ptr<Layer> myLayer(NULL);
 	vector<int> inShape = {param.batch_size, x_train->getC(), x_train->getH(), x_train->getW()};
 	cout << "input -> (" << inShape[0] << ", " << inShape[1] << ", " << inShape[2] << ", " << inShape[3] << ")" << endl;
 	for (int i = 0; i < (int)layers.size() - 1; i++) {
 		string lname = layers[i];
 		string ltype = ltypes[i];
-		// conv1 -> relu1 -> pool1 -> fc -> softmax
-		if (ltype == "Conv") {
+
+		if (ltype == "Conv") 
 			myLayer.reset(new ConvLayer);
-		}
-		if (ltype == "ReLU") {
+	
+		if (ltype == "ReLU") 
 			myLayer.reset(new ReLULayer);
-			
-		}
-		if (ltype == "Pool") {
+	
+		if (ltype == "Pool") 
 			myLayer.reset(new PoolLayer);
-		}
-		if (ltype == "FC") {
+
+		if (ltype == "FC") 
 			myLayer.reset(new FCLayer);
-		}
-		if (ltype == "Dropout") {
+
+		if (ltype == "Dropout") 
 			myLayer.reset(new DropoutLayer);
-		}
+
 		myLayers[lname] = myLayer;
 		myLayer->initLayer(inShape, lname, data[lname], param.lparams[lname]);
 		myLayer->calcShape(inShape, outShapes[lname], param.lparams[lname]);
@@ -137,12 +136,12 @@ void Net::initNet(NetParam& param, vector<shared_ptr<Blob>>& x, vector<shared_pt
 
 void Net::trainNet(NetParam& param) {
 	
-	int N = x_train->getN(); // 样本总数
+	int N = x_train->getN(); // The total number of samples
 	int iter_per_epoch = N / param.batch_size;
-	// 总的批次数（迭代次数）=单个epoch所含的批次数 * epoch个数
+	// The total number of batches (iterations) = the number of batches contained in a single epoch * the number of epochs
 	int batchs = iter_per_epoch * param.epochs;
 	for (int iter = 0; iter < batchs; iter++) {
-		// 1. 从整个训练集中获取一个mini-batch
+		// 1. Obtain a mini-batch from the entire training set
 		shared_ptr<Blob> x_batch;
 		shared_ptr<Blob> y_batch;
 		x_batch.reset(new Blob(
@@ -157,44 +156,41 @@ void Net::trainNet(NetParam& param) {
 				(((iter + 1) * param.batch_size) % N)
 			))));
 
-		// 2. 用该mini-batch训练网络模型
+		// 2. Train the network model with the mini-batch
 		train_with_batch(x_batch, y_batch, param);
 
-		// 3. 评估模型当前准确率（训练集和验证集）
+		// 3. Evaluate the current accuracy of the model (training set and verification set)
 		if (iter % param.acc_frequence == 0) {
 			evaluate_with_batch(param);
 			printf("iter_%d   lr: %0.6f   train_loss: %f   val_loss: %f   train_acc: %0.2f%%   val_acc: %0.2f%%\n",
 				iter, param.lr, train_loss, val_loss, train_accu * 100, val_accu * 100);
 		}
-		// 4. 保存模型快照
+		// 4. Save model
 		if (iter > 0 && param.snap_shot && iter % param.snapshot_interval == 0) {
-			// (1) 定义输出文件
+
 			char outputFile[40];
 			sprintf_s(outputFile, "./iter%d.RemNetModel", iter);
 			fstream output(outputFile, ios::out | ios::trunc | ios::binary);
 
-			// (2) 把Blob中的参数保存到snapshotModel中
 			shared_ptr<RemNet::snapshotModel> snapshot_model(new RemNet::snapshotModel);
 			saveModelParam(snapshot_model);
 
-			// (3) 调用SerializeToOstream()函数将snapshotModel中的数据写成一个二进制文件
 			if (!snapshot_model->SerializeToOstream(&output)) {
 				cout << "Failed to Serialize snapshot_model to Ostream";
 				return;
 			}
-
 		}
 	}
 }
 
 void Net::train_with_batch(shared_ptr<Blob> &x, shared_ptr<Blob>& y, NetParam& param, string mode) {
 
-	// 1. 将mini-batch填充到初始层的x当中
+	// 1. Populate the mini-batch with x in the initial layer
 	data[layers[0]][0] = x;
 	data[layers.back()][1] = y;
 
-	// 2. 逐层前向计算 conv1->relu1->pool1->fc1->softmax
-	int n = layers.size(); // 层数
+	// 2. Layer by layer forward calculation
+	int n = layers.size(); // The number of layers
 	for (int i = 0; i < n - 1; i++) {
 		string lname = layers[i];
 		shared_ptr<Blob> out;
@@ -203,7 +199,7 @@ void Net::train_with_batch(shared_ptr<Blob> &x, shared_ptr<Blob>& y, NetParam& p
 	
 	}
 	if (mode == "TRAIN") {
-		// 3. softmax 和 计算loss
+		// 3. softmax and calc Loss
 		if (ltypes.back() == "Softmax")
 			SoftmaxLossLayer::softmax_cross_entropy_with_logits(data[layers.back()], train_loss, gradient[layers.back()][0]);
 		if (ltypes.back() == "SVM")
@@ -215,18 +211,18 @@ void Net::train_with_batch(shared_ptr<Blob> &x, shared_ptr<Blob>& y, NetParam& p
 			SVMLossLayer::hinge_with_logits(data[layers.back()], val_loss, gradient[layers.back()][0]);
 	}
 	if (mode == "TRAIN") {
-		// 4. 逐层反向传播 conv1<-relu1<-pool1<-fc1<-softmax
+		// 4. Layer by layer back propagation 
 		for (int i = n - 2; i >= 0; i--) {
 			string lname = layers[i];
 			myLayers[lname]->backward(gradient[layers[i + 1]][0], data[lname], gradient[lname], param.lparams[lname]);
 		}
 	}
 
-	// 5. 对各层梯度施加L2正则化的影响
+	// 5. The effect of L2 regularization is applied to each layer gradient
 	if (param.reg != 0)
 		regular_with_batch(param, mode);
 
-	// 6. 参数更新（利用梯度下降）
+	// 6. update parameters
 	if (mode == "TRAIN")
 		optimizer_with_batch(param);
 }
@@ -239,7 +235,7 @@ Blob& Blob::operator= (double val) {
 
 void Net::optimizer_with_batch(NetParam& param) {
 	for (auto lname : layers) {
-		// 跳过没有weight和bias的层
+		// Skip the layer without weight and bias
 		if (!data[lname][1] || !data[lname][2])
 			continue;
 
@@ -272,7 +268,7 @@ void Net::optimizer_with_batch(NetParam& param) {
 }
 
 void Net::evaluate_with_batch(NetParam& param) {
-	// 评估训练集准确率
+	// Evaluate the accuracy of the training set
 	shared_ptr<Blob> x_train_subset;
 	shared_ptr<Blob> y_train_subset;
 	int N = x_train->getN();
@@ -285,7 +281,7 @@ void Net::evaluate_with_batch(NetParam& param) {
 	}
 	train_with_batch(x_train_subset, y_train_subset, param, "TEST");
 	train_accu = calc_accuracy(*data[layers.back()][1], *data[layers.back()][0]);
-	// 评估验证集准确率
+	// Evaluate the accuracy of the Val set
 	
 	train_with_batch(x_val, y_val, param, "TEST");
 	val_accu = calc_accuracy(*data[layers.back()][1], *data[layers.back()][0]);
@@ -299,9 +295,9 @@ double Net::calc_accuracy(Blob& y, Blob& pred) {
 	vector<int> size_p = pred.size();
 	for (int i = 0; i < 4; i++)
 		assert(size_y[i] == size_p[i]);
-	// 遍历所有cube，找出y和pred的最大值所对应的下标，进行比对
+	// Go through all cubes, find out the index corresponding to the maximum value of y and pred, and compare
 	int N = y.getN();
-	int count = 0; // 正确个数
+	int count = 0; // The number of right
 	for (int n = 0; n < N; n++)
 		if (y[n].index_max() == pred[n].index_max())
 			count++;
@@ -309,13 +305,13 @@ double Net::calc_accuracy(Blob& y, Blob& pred) {
 }
 
 void Net::saveModelParam(shared_ptr<RemNet::snapshotModel>& snapshot_model) {
-	// 没有weight和bias的不需要存储
+	// Those without weight and bias do not need to be stored
 	for (auto lname : layers) {
 		if (!data[lname][1] || !data[lname][2])
 			continue;
-		// 取出相关Blob中的所有参数，填入snapshotModel中
+		// Take all parameters from the relevant Blob and fill in the snapshotModel
 		for (int i = 1; i <= 2; i++) { // weight和bias
-			RemNet::snapshotModel_paramBlok* param_blok = snapshot_model->add_param_blok(); // 动态添加一个param_blok
+			RemNet::snapshotModel_paramBlok* param_blok = snapshot_model->add_param_blok(); // Dynamically add a param blok
 			int N = data[lname][i]->getN();
 			int C = data[lname][i]->getC();
 			int H = data[lname][i]->getH();
@@ -345,10 +341,10 @@ void Net::saveModelParam(shared_ptr<RemNet::snapshotModel>& snapshot_model) {
 
 void Net::loadModelParam(const shared_ptr<RemNet::snapshotModel>& snapshot_model) {
 	for (int i = 0; i < snapshot_model->param_blok_size(); i++) {
-		// 1. 从snapshot_model中逐一取出paramBlok
+		// 1. Pull paramBlok one by one from snapshot_model
 		const RemNet::snapshotModel::paramBlok& param_blok = snapshot_model->param_blok(i);
 		
-		// 2. 取出paramBlok中的标记型变量
+		// 2. Extract the tagged variable in paramBlok
 		string lname = param_blok.layer_name();
 		string paramtype = param_blok.param_type();
 		int N = param_blok.kernel_n();
@@ -357,7 +353,7 @@ void Net::loadModelParam(const shared_ptr<RemNet::snapshotModel>& snapshot_model
 		int W = param_blok.kernel_w();
 		cout << lname << ":" << paramtype << ": (" << N << ", " << C << ", " << H << ", " << W << ")" << endl;
 
-		// 3. 遍历当前paramBlok中的每一个参数，取出，填入对应的Blob中
+		// 3. Iterate through each parameter in the current paramBlok, pull it out, and fill in the corresponding Blob
 		int val_idx = 0;
 		shared_ptr<Blob> tmp_blob(new Blob(N, C, H, W));
 		for (int n = 0; n < N; n++) {
@@ -370,8 +366,6 @@ void Net::loadModelParam(const shared_ptr<RemNet::snapshotModel>& snapshot_model
 				}
 			}
 		}
-
-		// 4. 将tmp_blob赋值到data中
 		if (paramtype == "WEIGHT")
 			data[lname][1] = tmp_blob;
 		else

@@ -13,41 +13,54 @@ using std::shared_ptr;
 using std::vector;
 using std::string;
 
-struct NetParam { // whole Model parameters
-	// learning rate
+struct NetParam { // Whole Model parameters
+	// Learning rate
 	double lr;
-	// lr decay
+
+	// Whether to update the learning rate?
+	bool update_lr;
+
+	// Learning rate decay coefficient
 	double lr_decay;
-	// optimizer: sgd/momentum/rmsprop
-	std::string optimizer;
-	// momentum parameter
+
+	// Optimizer sgd/momentum/rmsprop/adagrad
+	string optimizer;
+
+	// Momentum optimizer coefficient decay
 	double momentum;
-	// rmsprop parameter
+
+	// Rmsprop optimizer coefficient decay
 	double rmsprop;
-	// L2 parameter
+
+	// L2 Regularization coefficient
 	double reg;
-	// epochs
+
 	int epochs;
-	// use mini-batch gradient descent?
+
+	// Whether to use mini-batch gradient descent algorithm for optimization?
 	bool use_batch;
-	// batch_size;
+
 	int batch_size;
+
 	// every acc_frequence do evaluate
 	int acc_frequence;
-	// update lr?
-	bool update_lr;
-	// save model?
+
+	// Whether you need to save the model?
 	bool snap_shot;
-	// every snapshot_interval save model
+
+	// Save the model every few iterations
 	int snapshot_interval;
-	// fine-tune?
+
+	// Whether to train with fine tune
 	bool fine_tune;
-	// pretrained model path
+
+	// The path of the pretrained model
 	string preTrainedModel;
 
-	// layer name
+	// layers name
 	vector<string> layers;
-	// layer type
+
+	// layers type
 	vector<string> ltypes;
 
 	unordered_map<string, Param> lparams;
@@ -78,17 +91,21 @@ private:
 
 	vector<string> layers; // layer name
 	vector<string> ltypes; // layer type
+
 	double train_loss;
 	double val_loss;
 	double train_accu;
 	double val_accu;
 
 	unordered_map<string, vector<shared_ptr<Blob>>> data; // the needed Blob for forward
+	
 	// gradient[0]=dx, gradient[1]=dw, gradient[2]=db
 	unordered_map<string, vector<shared_ptr<Blob>>> gradient; // the needed Blob for backward
+
 	unordered_map<string, shared_ptr<Layer>> myLayers;
-	unordered_map<string, vector<int>> outShapes; // every layer output shape
-	unordered_map<string, vector<shared_ptr<Blob>>> step_cache; // save 累加梯度，主要用于momentum和rmsprop
+
+	unordered_map<string, vector<int>> outShapes; // output shape for each layer
+	unordered_map<string, vector<shared_ptr<Blob>>> step_cache; // Preserved cumulative gradient，Only rmsprop and momentum are used
 
 };
 

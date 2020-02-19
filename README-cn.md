@@ -1,3 +1,5 @@
+<script type="text/javascript" src="[http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default">](http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default%22%3E%3C/script%3E) 
+
 <p align = "center">
   <a href = "https://github.com/wmathor/RemNet">
     <img height="60%" width = "70%" src = "https://s2.ax1x.com/2020/02/16/3prR1J.png">
@@ -17,14 +19,14 @@
 
 [中文](https://github.com/wmathor/RemNet/blob/master/README-cn.md) | [English](https://github.com/wmathor/RemNet)
 
-RemNet是基于C++编写的开源深度学习框架。它非常容易上手使用，只需要您定义好网络结构并设定相关参数即可开始训练。
+RemNet是基于C++编写的开源深度学习框架。它非常容易上手使用，只需要您定义好网络结构并设定相关参数即可开始训练
 
 - [下载](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E4%B8%8B%E8%BD%BD)
 - [有关RemNet的更多信息](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E6%9C%89%E5%85%B3remnet%E7%9A%84%E6%9B%B4%E5%A4%9A%E4%BF%A1%E6%81%AF)
-  - [设计重点]()
+  - [设计重点](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%AE%BE%E8%AE%A1%E9%87%8D%E7%82%B9)
   - [FAQ](https://github.com/wmathor/RemNet/blob/master/README-cn.md#faq)
-- [TODO](https://github.com/wmathor/RemNet/blob/master/README-cn.md#arttodo)
-- [贡献者](https://github.com/wmathor/RemNet/blob/master/README-cn.md#贡献者)
+- [TODO](https://github.com/wmathor/RemNet/blob/master/README-cn.md#art-todo)
+- [贡献者](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%B4%A1%E7%8C%AE%E8%80%85)
 - [许可](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%AE%B8%E5%8F%AF)
 
 ## 下载
@@ -55,7 +57,7 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 
 ![](https://s2.ax1x.com/2020/02/16/39V9dU.png)
 
-### 快速上手
+### 设计重点
 
 以MNIST数据集为例，下图展示了它的Images和Labels在RemNet中的存储方式
 

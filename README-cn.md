@@ -24,7 +24,6 @@ RemNet是基于C++编写的开源深度学习框架。它非常容易上手使�
   - [设计重点](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%AE%BE%E8%AE%A1%E9%87%8D%E7%82%B9)
   - [FAQ](https://github.com/wmathor/RemNet/blob/master/README-cn.md#faq)
 - [TODO](https://github.com/wmathor/RemNet/blob/master/README-cn.md#art-todo)
-- [贡献者](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%B4%A1%E7%8C%AE%E8%80%85)
 - [许可](https://github.com/wmathor/RemNet/blob/master/README-cn.md#%E8%AE%B8%E5%8F%AF)
 
 ## 下载
@@ -99,13 +98,6 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 - [ ] 支持循环神经网络
 - [ ] 支持GPU训练（有生之年系列）
 - [ ] 设计图形界面（有生之年系列×2）
-
-## 贡献者
-
-|                            :tada:                            |
-| :----------------------------------------------------------: |
-| <img height='48' width='48' src='https://avatars1.githubusercontent.com/u/32392878?s=460&v=4'> |
-|            [@wmathor](https://github.com/wmathor)            |
 
 ## 许可
 

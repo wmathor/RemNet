@@ -34,9 +34,7 @@ $ git clone https://github.com/wmathor/RemNet.git
 
 clone到本地之后，请使用Visual Studio导入该项目，然后运行即可，非常简单。您也可以尝试修改`myModel.json`中的信息，例如添加其它一些层，然后再重新运行。
 
-对了，一开始您不需要准备什么数据，我已经为您提供好了，就在`./RemNet/mnist_data`中
-
-
+对了，一开始您不需要准备什么数据，我已经为您提供好了，就在`./RemNet/mnist_data`中	
 
 ## 有关RemNet的更多信息
 
@@ -76,11 +74,11 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 
 1. 与Tensorflow和PyTorch最大的区别是什么？
 
-   Tensorflow我几乎没用过，因为太难学了。PyTorch是我一直使用的深度学习框架。我就说一下RemNet和PyTorch的区别，PyTorch需要自定义优化器，然后传入参数，在迭代过程中还需要梯度清零以及反向传播。但是RemNet不需要这么麻烦，你只需要修改`myModel.json`的参数，使用什么优化器，优化器的权重衰减是多少，剩下的全部交给程序就行了
+   Tensorflow我几乎没用过，因为太难学了。PyTorch是我一直使用的深度学习框架，我就说一下RemNet和PyTorch的区别。PyTorch需要自定义优化器，然后传入参数，在迭代过程中还需要梯度清零以及反向传播。但是RemNet不需要这么麻烦，你只需要修改`myModel.json`的参数，例如使用什么优化器，优化器的权重衰减是多少，剩下的全部交给程序就行了
 
 2. 为什么起名为RemNet？
 
-   因为我喜欢的一个女生叫レム ，她名字的英文翻译就是Rem:heart:
+   因为我喜欢的一个女生叫レム（雷姆） ，她名字的英文翻译就是Rem:heart:
 
 3. 我可以做什么？
 

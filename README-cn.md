@@ -59,7 +59,7 @@ RemNet的整体编写思路类似于Caffee，它的基本数据类型包括Cube�
 
 以MNIST数据集为例，下图展示了它的Images和Labels在RemNet中的存储方式
 
-![](https://s2.ax1x.com/2020/02/19/3EOVv6.png)
+![](https://s2.ax1x.com/2020/02/19/3VPNpF.png)
 
 很明显，对于标签我进行了one-hot Encoding，这方便后面的Loss计算，而且都统一成Blob的格式相比于普通的数据类型更有助于理解，因为绝大多数深度学习问题都是这么做的。
 
